@@ -303,6 +303,7 @@ export default function Home() {
               variants={upVariants}
               className="mt-12 flex flex-wrap items-center gap-3 rounded-2xl border border-green-100 bg-white/60 px-5 py-4 text-gray-700 shadow-sm backdrop-blur-md"
             >
+              
               <span className="font-medium">Trusted by mindfulness seekers across:</span>
               <div className="flex items-center gap-3 text-green-800">
                 {TIMEZONES.map((tz, i) => (
