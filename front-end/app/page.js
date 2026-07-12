@@ -3,7 +3,8 @@
 import { useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion';
 import ScreenOne from './Components/layout/ScreenOne';
-import Footer from './Components/SectionOne/Footer';
+import Link from 'next/link';
+// import Footer from './Components/SectionOne/Footer';
 
 const TIMEZONES = ['EST', 'CST', 'MST', 'PST'];
 
@@ -19,6 +20,7 @@ const upVariants = {
   hidden: { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
 };
+
 
 function useParallax(strength = 18) {
   const prefersReducedMotion = useReducedMotion();
@@ -289,6 +291,7 @@ export default function Home() {
                 Claim Your Free First Class →
               </motion.button>
 
+            <Link href="/Classes">
               <motion.button
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.98 }}
@@ -297,6 +300,7 @@ export default function Home() {
               >
                 View Classes →
               </motion.button>
+            </Link>
             </motion.div>
 
             <motion.div

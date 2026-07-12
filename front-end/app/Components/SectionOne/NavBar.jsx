@@ -9,7 +9,7 @@ const NAV_LINKS = [
   { label: "About", href: "/About" },
   { label: "Classes", href: "/Classes" },
   { label: "F&Q", href: "/FQ" },
-  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/Contacts" },
 ];
 
 const navContainerVariants = {
