@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Loader2, Menu, X } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -11,6 +13,11 @@ const NAV_LINKS = [
   { label: "F&Q", href: "/FQ" },
   { label: "Contact", href: "/Contacts" },
 ];
+
+// Where the CTA sends signed-in users, and where signed-out users end up
+// after they sign in (via the callbackUrl on /login).
+const CLASSES_PATH = "/Classes";
+const LOGIN_PATH = "/login";
 
 const navContainerVariants = {
   hidden: { y: -32, opacity: 0 },
@@ -92,15 +99,48 @@ function NavLink({ href, label }) {
   );
 }
 
-function CTAButton({ className = "", onClick }) {
+/**
+ * Session-aware CTA. Clicking it never follows a plain href — it always
+ * checks auth state first:
+ *   - signed in      -> /Classes
+ *   - signed out     -> /login?callbackUrl=/Classes
+ *   - still checking -> button shows a small spinner and ignores clicks
+ */
+function CTAButton({ className = "", onNavigate }) {
+  const { status } = useSession();
+  const router = useRouter();
+  const isChecking = status === "loading";
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    if (isChecking) return;
+
+    onNavigate?.();
+
+    if (status === "authenticated") {
+      router.push(CLASSES_PATH);
+    } else {
+      router.push(`${LOGIN_PATH}?callbackUrl=${encodeURIComponent(CLASSES_PATH)}`);
+    }
+  };
+
   return (
     <a
-      href="#book-session"
-      onClick={onClick}
-      className={`group inline-flex items-center gap-2 rounded-full bg-[#0E5D37] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_2px_10px_rgba(14,93,55,0.25)] transition-all duration-300 hover:-translate-y-[2px] hover:bg-[#157347] hover:shadow-[0_10px_24px_rgba(14,93,55,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E5D37]/50 focus-visible:ring-offset-2 ${className}`}
+      href={CLASSES_PATH}
+      onClick={handleClick}
+      aria-busy={isChecking}
+      className={`group inline-flex items-center gap-2 rounded-full bg-[#0E5D37] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_2px_10px_rgba(14,93,55,0.25)] transition-all duration-300 hover:-translate-y-[2px] hover:bg-[#157347] hover:shadow-[0_10px_24px_rgba(14,93,55,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0E5D37]/50 focus-visible:ring-offset-2 ${
+        isChecking ? "cursor-wait opacity-80" : ""
+      } ${className}`}
     >
-      Book Free Session
-      <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+      {isChecking ? (
+        <Loader2 className="h-4 w-4 animate-spin" />
+      ) : (
+        <>
+          Book Free Session
+          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+        </>
+      )}
     </a>
   );
 }
@@ -254,7 +294,7 @@ export default function NavBar() {
               >
                 <CTAButton
                   className="w-full justify-center"
-                  onClick={() => setIsMenuOpen(false)}
+                  onNavigate={() => setIsMenuOpen(false)}
                 />
               </motion.li>
             </motion.ul>
