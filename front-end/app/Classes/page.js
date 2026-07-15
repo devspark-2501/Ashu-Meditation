@@ -138,6 +138,7 @@ export default function Classes() {
                         4-Week Meditation Mastery Program
                     </motion.h1>
 
+
                     <motion.p
                         variants={fadeUp}
                         className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-gray-600"
