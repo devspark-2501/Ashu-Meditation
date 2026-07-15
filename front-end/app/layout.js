@@ -1,3 +1,5 @@
+import SessionWrapper from "./Components/SessionWrapper";
+
 import Footer from "./Components/SectionOne/Footer";
 import NavBar from "./Components/SectionOne/NavBar";
 import "./globals.css";
@@ -11,9 +13,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <NavBar />
-        {children}
-        <Footer />
+        <SessionWrapper>
+          <NavBar />
+          {children}
+          <Footer />
+        </SessionWrapper>
       </body>
     </html>
   );
