@@ -70,7 +70,7 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-b from-[#5FB878]/10 via-white to-white px-6">
+        <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-b from-[#5FB878]/10 via-white to-white px-6 pt-30">
             <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
                 <div className="absolute -top-24 -left-24 h-[26rem] w-[26rem] rounded-full bg-[#5FB878]/20 blur-3xl" />
                 <div className="absolute bottom-0 right-0 h-[26rem] w-[26rem] rounded-full bg-[#0E5D37]/10 blur-3xl" />

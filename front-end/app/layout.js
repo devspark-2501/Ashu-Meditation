@@ -1,4 +1,4 @@
-import SessionWrapper from "./Components/SessionWrapper";
+import SessionWrapper from "./Components/SectionOne/SessionWrapper";
 
 import Footer from "./Components/SectionOne/Footer";
 import NavBar from "./Components/SectionOne/NavBar";
