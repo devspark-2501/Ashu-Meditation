@@ -9,7 +9,7 @@ import { User, Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
 export default function SignupPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get('callbackUrl') || '/';
+    const callbackUrl = searchParams.get('callbackUrl') || '/Classes';
 
     const [form, setForm] = useState({ name: '', email: '', password: '' });
     const [error, setError] = useState('');

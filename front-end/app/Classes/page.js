@@ -26,15 +26,7 @@ const fadeUp = {
 /* ---------------------------------------------
    Section shell
 --------------------------------------------- */
-type SectionProps = {
-    number: string;
-    icon: React.ElementType;
-    title: string;
-    subtitle: string;
-    children: React.ReactNode;
-};
-
-function Section({ number, icon: Icon, title, subtitle, children }: SectionProps) {
+function Section({ number, icon: Icon, title, subtitle, children }) {
     return (
         <motion.section
             variants={fadeUp}
@@ -66,17 +58,7 @@ function Section({ number, icon: Icon, title, subtitle, children }: SectionProps
 const inputClass =
     'w-full rounded-xl border border-[#0E5D37]/15 bg-[#FAFDFB] px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 outline-none transition focus:border-[#5FB878] focus:ring-2 focus:ring-[#5FB878]/25';
 
-function Field({
-    label,
-    required,
-    full,
-    children,
-}: {
-    label: string;
-    required?: boolean;
-    full?: boolean;
-    children: React.ReactNode;
-}) {
+function Field({ label, required, full, children }) {
     return (
         <label className={`flex flex-col gap-1.5 ${full ? 'sm:col-span-2' : ''}`}>
             <span className="text-sm font-medium text-gray-700">
@@ -92,41 +74,7 @@ function Field({
 /* ---------------------------------------------
    Form data
 --------------------------------------------- */
-type FormData = {
-    fullName: string;
-    dob: string;
-    gender: string;
-    phone: string;
-    email: string;
-    city: string;
-    country: string;
-    emergencyName: string;
-    emergencyRelationship: string;
-    emergencyPhone: string;
-    practicedBefore: string;
-    practiceDuration: string;
-    priorCourses: string;
-    medicalConditions: string;
-    mentalHealthNotes: string;
-    medications: string;
-    accessibilityNeeds: string;
-    batch: string;
-    format: string;
-    language: string;
-    reason: string;
-    expectations: string;
-    consentWellness: boolean;
-    consentGuidelines: boolean;
-    consentUpdates: boolean;
-    paymentStatus: string;
-    transactionId: string;
-    couponCode: string;
-    hearAboutUs: string;
-    referredBy: string;
-    comments: string;
-};
-
-const initialData: FormData = {
+const initialData = {
     fullName: '',
     dob: '',
     gender: '',
@@ -164,15 +112,15 @@ const initialData: FormData = {
    Page
 --------------------------------------------- */
 export default function EnrollmentForm() {
-    const [data, setData] = useState<FormData>(initialData);
-    const [receiptName, setReceiptName] = useState<string>('');
+    const [data, setData] = useState(initialData);
+    const [receiptName, setReceiptName] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
 
-    const update = <K extends keyof FormData>(key: K, value: FormData[K]) =>
+    const update = (key, value) =>
         setData((prev) => ({ ...prev, [key]: value }));
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         if (!data.fullName || !data.phone || !data.email) {
