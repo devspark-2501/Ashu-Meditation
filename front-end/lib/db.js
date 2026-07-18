@@ -1,13 +1,5 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-    throw new Error(
-        'Missing MONGODB_URI. Add it to .env.local, e.g. MONGODB_URI=mongodb+srv://...'
-    );
-}
-
 /**
  * Next.js reloads modules in dev, which would normally open a new Mongo
  * connection on every hot reload. Caching the connection on `global`
@@ -21,6 +13,14 @@ if (!cached) {
 
 async function connectDB() {
     if (cached.conn) return cached.conn;
+
+    const MONGODB_URI = process.env.MONGODB_URI;
+
+    if (!MONGODB_URI) {
+        throw new Error(
+            "Missing MONGODB_URI. Add it to .env.local (locally) or your Vercel project's Environment Variables (in production), e.g. MONGODB_URI=mongodb+srv://..."
+        );
+    }
 
     if (!cached.promise) {
         cached.promise = mongoose
