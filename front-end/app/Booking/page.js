@@ -19,6 +19,7 @@ import {
     CheckCircle2,
     Loader2,
     Upload,
+    AlertCircle,
 } from 'lucide-react';
 
 /* ---------------------------------------------
@@ -248,7 +249,7 @@ function AuthGate({ children }) {
 
     useEffect(() => {
         if (status === 'unauthenticated') {
-            router.replace('/login?callbackUrl=/booking');
+            router.replace('/login?callbackUrl=/Booking');
         }
     }, [status, router]);
 
@@ -277,6 +278,7 @@ function BookingForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [direction, setDirection] = useState(1);
+    const [error, setError] = useState('');
 
     const step = STEPS[stepIndex];
     const totalSteps = STEPS.length;
@@ -311,10 +313,35 @@ function BookingForm() {
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
-        // TODO: wire this up to a real booking API route once the backend exists.
-        await new Promise((resolve) => setTimeout(resolve, 900));
-        setIsSubmitting(false);
-        setIsSubmitted(true);
+        setError('');
+
+        // `receipt` is a raw File object — can't be JSON.stringify'd, and
+        // there's no file-storage service (S3/Cloudinary/etc.) wired up yet.
+        // Send its name for now; once storage exists, upload it there first
+        // and send the resulting URL as receiptUrl instead.
+        const { receipt, ...rest } = formData;
+        const payload = { ...rest, receiptUrl: receipt?.name || '' };
+
+        try {
+            const res = await fetch('/api/bookings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || 'Something went wrong. Please try again.');
+            }
+
+            setIsSubmitted(true);
+        } catch (err) {
+            console.error(err);
+            setError(err.message);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const Icon = step.icon;
@@ -402,6 +429,13 @@ function BookingForm() {
                     </motion.div>
                 </AnimatePresence>
 
+                {error && (
+                    <div className="mt-6 flex items-start gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
+                        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                        {error}
+                    </div>
+                )}
+
                 {/* Nav buttons */}
                 <div className="mt-10 flex items-center justify-between border-t border-[#0E5D37]/8 pt-6">
                     <button
@@ -477,10 +511,10 @@ export default function BookingPage() {
                     <p className="text-xs font-semibold uppercase tracking-wide text-[#5FB878]">
                         Enroll in a session
                     </p>
-                    <h1 className="mt-2 text-3xl font-bold text-[#ffffff] md:text-5xl">
+                    <h1 className="mt-2 text-3xl font-bold text-[#0E5D37] md:text-5xl">
                         Book Your Meditation Class
                     </h1>
-                    <p className="mt-4 text-white">
+                    <p className="mt-4 text-gray-600">
                         A few details help us personalize your practice and take care
                         of you properly.
                     </p>
