@@ -25,6 +25,15 @@ import User from '@/lib/models/User';
  * single Pages-Router handler function instead of an object, and the guard
  * below will throw immediately instead of letting `handlers` silently be
  * undefined three files downstream.
+ *
+ * IMPORTANT #2: there's no database adapter here (pure JWT sessions), which
+ * means Google sign-ins would NOT automatically get a row in the `users`
+ * collection. Without the extra step in the `jwt` callback below, a Google
+ * user's `token.id` would end up being Google's raw account id — a string
+ * that is NOT a valid Mongo ObjectId — and any write that stores it as
+ * `Booking.user` (or similar) would throw a CastError. The `jwt` callback
+ * below finds-or-creates a matching Mongo User for Google sign-ins so
+ * `token.id` is always a real ObjectId, same as credentials accounts.
  */
 const result = NextAuth({
     providers: [
@@ -81,9 +90,30 @@ const result = NextAuth({
     },
 
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user, account }) {
             if (user) {
-                token.id = user.id;
+                if (account?.provider === 'google') {
+                    // Google sign-ins skip `authorize()`, so there's no
+                    // guarantee a matching Mongo User exists yet. Find or
+                    // create one so token.id is always a real ObjectId.
+                    await connectDB();
+
+                    let dbUser = await User.findOne({
+                        email: user.email.toLowerCase(),
+                    });
+
+                    if (!dbUser) {
+                        dbUser = await User.create({
+                            name: user.name,
+                            email: user.email.toLowerCase(),
+                            provider: 'google',
+                        });
+                    }
+
+                    token.id = dbUser._id.toString();
+                } else {
+                    token.id = user.id;
+                }
             }
             return token;
         },
