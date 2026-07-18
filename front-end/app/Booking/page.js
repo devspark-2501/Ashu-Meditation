@@ -135,7 +135,7 @@ const STEPS = [
 --------------------------------------------- */
 function Field({ field, value, onChange }) {
     const baseInput =
-        'w-full rounded-xl border border-[#0E5D37]/15 bg-white/80 px-4 py-3 text-sm text-[#1E1E1E] placeholder:text-gray-400 transition-colors focus:border-[#0E5D37] focus:outline-none focus:ring-2 focus:ring-[#0E5D37]/20';
+        'w-full rounded-xl border border-[#0E5D37]/12 bg-white px-4 py-3 text-sm text-[#26332C] placeholder:text-gray-400 shadow-sm transition-all focus:border-[#5FB878] focus:outline-none focus:ring-4 focus:ring-[#5FB878]/15';
 
     if (field.type === 'textarea') {
         return (
@@ -156,7 +156,7 @@ function Field({ field, value, onChange }) {
                 required={field.required}
                 value={value || ''}
                 onChange={(e) => onChange(field.name, e.target.value)}
-                className={baseInput}
+                className={`${baseInput} cursor-pointer`}
             >
                 <option value="" disabled>
                     Select an option
@@ -172,7 +172,7 @@ function Field({ field, value, onChange }) {
 
     if (field.type === 'radio') {
         return (
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2.5">
                 {field.options.map((opt) => {
                     const isActive = value === opt;
                     return (
@@ -180,10 +180,10 @@ function Field({ field, value, onChange }) {
                             key={opt}
                             type="button"
                             onClick={() => onChange(field.name, opt)}
-                            className={`rounded-full border px-5 py-2.5 text-sm font-medium transition-colors ${
+                            className={`rounded-full border px-5 py-2.5 text-sm font-medium transition-all ${
                                 isActive
-                                    ? 'border-[#0E5D37] bg-[#0E5D37] text-white shadow-sm'
-                                    : 'border-[#0E5D37]/15 bg-white/70 text-[#1E1E1E]/80 hover:border-[#0E5D37]/40'
+                                    ? 'border-[#0E5D37] bg-[#0E5D37] text-white shadow-md shadow-[#0E5D37]/20'
+                                    : 'border-[#0E5D37]/15 bg-white text-[#26332C]/75 hover:border-[#5FB878]/60 hover:bg-[#5FB878]/5'
                             }`}
                         >
                             {opt}
@@ -196,13 +196,13 @@ function Field({ field, value, onChange }) {
 
     if (field.type === 'checkbox') {
         return (
-            <label className="flex cursor-pointer items-start gap-3">
+            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0E5D37]/10 bg-white px-4 py-3.5 transition-colors hover:border-[#5FB878]/40">
                 <input
                     type="checkbox"
                     required={field.required}
                     checked={!!value}
                     onChange={(e) => onChange(field.name, e.target.checked)}
-                    className="mt-1 h-4 w-4 shrink-0 rounded border-[#0E5D37]/30 text-[#0E5D37] focus:ring-[#0E5D37]/30"
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#0E5D37]/30 text-[#0E5D37] focus:ring-2 focus:ring-[#5FB878]/40"
                 />
                 <span className="text-sm leading-relaxed text-gray-600">
                     {field.label}
@@ -213,7 +213,7 @@ function Field({ field, value, onChange }) {
 
     if (field.type === 'file') {
         return (
-            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-[#0E5D37]/25 bg-white/60 px-4 py-4 text-sm text-gray-500 transition-colors hover:border-[#0E5D37]/50">
+            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-[#0E5D37]/25 bg-[#5FB878]/5 px-4 py-4 text-sm text-gray-500 transition-colors hover:border-[#5FB878] hover:bg-[#5FB878]/10">
                 <Upload className="h-4 w-4 shrink-0 text-[#0E5D37]" />
                 <span className="truncate">
                     {value?.name || 'Upload receipt or enter transaction ID above'}
@@ -254,7 +254,7 @@ function AuthGate({ children }) {
 
     if (status === 'loading' || status === 'unauthenticated') {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-white">
+            <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#5FB878]/10 via-white to-white">
                 <div className="flex flex-col items-center gap-3 text-[#0E5D37]">
                     <Loader2 className="h-6 w-6 animate-spin" />
                     <p className="text-sm text-gray-500">
@@ -325,9 +325,11 @@ function BookingForm() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: 'easeOut' }}
-                className="mx-auto flex max-w-lg flex-col items-center gap-4 rounded-3xl border border-[#0E5D37]/10 bg-white/80 p-10 text-center shadow-[0_8px_40px_rgba(14,93,55,0.1)] backdrop-blur-xl"
+                className="mx-auto flex max-w-lg flex-col items-center gap-4 rounded-3xl border border-[#0E5D37]/10 bg-white p-10 text-center shadow-[0_12px_50px_rgba(14,93,55,0.1)]"
             >
-                <CheckCircle2 className="h-14 w-14 text-[#5FB878]" strokeWidth={1.5} />
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#5FB878]/15">
+                    <CheckCircle2 className="h-8 w-8 text-[#0E5D37]" strokeWidth={1.6} />
+                </div>
                 <h2 className="text-2xl font-bold text-[#0E5D37]">
                     Booking Received!
                 </h2>
@@ -347,9 +349,9 @@ function BookingForm() {
                     <span>
                         Step {stepIndex + 1} of {totalSteps}
                     </span>
-                    <span>{step.title}</span>
+                    <span className="text-[#5FB878]">{step.title}</span>
                 </div>
-                <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[#0E5D37]/10">
+                <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[#0E5D37]/8">
                     <motion.div
                         className="h-full rounded-full bg-gradient-to-r from-[#5FB878] to-[#0E5D37]"
                         animate={{ width: `${progress}%` }}
@@ -359,7 +361,7 @@ function BookingForm() {
             </div>
 
             {/* Card */}
-            <div className="relative overflow-hidden rounded-3xl border border-[#0E5D37]/10 bg-white/70 p-8 shadow-[0_8px_40px_rgba(14,93,55,0.08)] backdrop-blur-xl md:p-10">
+            <div className="relative overflow-hidden rounded-3xl border border-[#0E5D37]/8 bg-white p-8 shadow-[0_12px_50px_rgba(14,93,55,0.08)] md:p-10">
                 <AnimatePresence mode="wait" custom={direction}>
                     <motion.div
                         key={stepIndex}
@@ -382,10 +384,10 @@ function BookingForm() {
                             {visibleFields.map((field) => (
                                 <div key={field.name}>
                                     {field.type !== 'checkbox' && (
-                                        <label className="mb-2 block text-sm font-medium text-[#1E1E1E]/80">
+                                        <label className="mb-2 block text-sm font-medium text-gray-700">
                                             {field.label}
                                             {field.required && (
-                                                <span className="ml-1 text-[#0E5D37]">*</span>
+                                                <span className="ml-1 text-[#5FB878]">*</span>
                                             )}
                                         </label>
                                     )}
@@ -401,7 +403,7 @@ function BookingForm() {
                 </AnimatePresence>
 
                 {/* Nav buttons */}
-                <div className="mt-10 flex items-center justify-between">
+                <div className="mt-10 flex items-center justify-between border-t border-[#0E5D37]/8 pt-6">
                     <button
                         type="button"
                         onClick={goBack}
@@ -472,10 +474,13 @@ export default function BookingPage() {
                     transition={{ duration: 0.6, ease: 'easeOut' }}
                     className="mx-auto mb-12 max-w-2xl text-center"
                 >
-                    <h1 className="text-3xl font-bold text-[#0E5D37] md:text-5xl">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[#5FB878]">
+                        Enroll in a session
+                    </p>
+                    <h1 className="mt-2 text-3xl font-bold text-[#ffffff] md:text-5xl">
                         Book Your Meditation Class
                     </h1>
-                    <p className="mt-4 text-gray-600">
+                    <p className="mt-4 text-white">
                         A few details help us personalize your practice and take care
                         of you properly.
                     </p>

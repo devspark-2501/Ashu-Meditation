@@ -16,7 +16,7 @@ const NAV_LINKS = [
 
 // Where the CTA sends signed-in users, and where signed-out users end up
 // after they sign in (via the callbackUrl on /login).
-const CLASSES_PATH = "/Classes";
+const CLASSES_PATH = "/Booking";
 const LOGIN_PATH = "/login";
 
 const navContainerVariants = {
